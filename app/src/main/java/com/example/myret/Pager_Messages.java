@@ -59,11 +59,11 @@ public class Pager_Messages extends AppCompatActivity {
         {
             //we have to keep it ASC in Fav because of pager position
             //because we use its order while in normal messages it is not favorder but it is origposition
-            myArrayList = ss.getFavMessagesOrderedASC() ;
+            myArrayList = ss.getFavMessages() ;
         }
 
         else {
-            myArrayList = ss.getMessagesNotOrdered(titleID);
+            myArrayList = ss.getMessages(titleID);
         }
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -79,7 +79,7 @@ public class Pager_Messages extends AppCompatActivity {
         //because order of fav start from index difference while normal messages start from ok index
         {mViewPager.setCurrentItem(pos);}
         else
-        {mViewPager.setCurrentItem(origPOS);}
+        {mViewPager.setCurrentItem(pos);}
 
 
 

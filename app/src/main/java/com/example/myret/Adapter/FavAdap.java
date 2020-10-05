@@ -87,11 +87,13 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
                     holder.img_fav.setImageResource(R.drawable.f);
                     sqlite.changeFav(msgs, 1);
                     Toast.makeText(context, "تم الإضافة إلى المفضلة", Toast.LENGTH_LONG).show();
+                    msgsList.remove(position);
                     notifyDataSetChanged();
                 } else {
                     holder.img_fav.setImageResource(R.drawable.nf);
                     sqlite.changeFav(msgs, 0);
                     Toast.makeText(context, "تم الإزالة من المفضلة", Toast.LENGTH_LONG).show();
+                    msgsList.remove(position);
                     notifyDataSetChanged();
                 }
             }
