@@ -1,12 +1,18 @@
 package com.example.myret;
 
+
+
+import android.content.Intent;
+import android.os.Bundle;
+
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.widget.Toast;
 
 import com.example.myret.Adapter.MsgTypesAdapter;
 import com.example.myret.Modal.MsgTypes;
@@ -34,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Sqlite sqlite;
     int counter;
     int TypeDescription;
-
+    Button btn;
 
 
     @Override
@@ -44,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
         sqlite = new Sqlite(this);
 
         recyclerView = findViewById(R.id.recyclerview);
+        btn = findViewById(R.id.button);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this,FavActivity.class);
+                startActivity(i);
+            }
+        });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         msgTypesAdapter = new MsgTypesAdapter(MainActivity.this, msgTypeList);

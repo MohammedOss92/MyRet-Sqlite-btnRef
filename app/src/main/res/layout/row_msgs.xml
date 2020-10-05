@@ -13,28 +13,70 @@
     android:clickable="true"
     android:focusable="true">
 
-    <LinearLayout
+
+
+    <LinearLayout android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#fff"
-        android:orientation="vertical">
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:paddingRight="15dp"
+        android:background="@drawable/card_background_selector"
+        android:descendantFocusability="afterDescendants"
+        xmlns:android="http://schemas.android.com/apk/res/android">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/newMsg"
-            android:gravity="top"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/tvTitleada"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="---"
+            android:textColor="#ff0000"
+            android:layout_gravity="top"
+            />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/txt_msg"
-            android:gravity="right"/>
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/tvMsgada"
+            android:gravity="right"
+            android:textSize="25sp"
+            />
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/shape" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/asasasas">
+            <ImageView
+                android:id="@+id/favada"
+                android:layout_width="30dp"
+                android:layout_height="28dp"
+                app:srcCompat="@drawable/nf"
+                android:layout_gravity="right"/>
 
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="28dp"
+                android:id="@+id/new_Msg"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/copy"
+                app:srcCompat="@drawable/new_msg"
+                android:visibility="invisible"/>
 
+        </LinearLayout>
 
     </LinearLayout>
+
 
 
 

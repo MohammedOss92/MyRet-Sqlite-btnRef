@@ -4,8 +4,7 @@ package com.example.myret.Modal;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
+
 
 import com.google.gson.annotations.SerializedName;
 
@@ -15,8 +14,7 @@ import java.io.Serializable;
 public class Msgs implements Serializable, Parcelable {
 
 
-    @ColumnInfo(name = "MsgID")
-    @NonNull
+
     private int MsgID;
 
     @SerializedName("MsgDescription")
@@ -51,6 +49,28 @@ public class Msgs implements Serializable, Parcelable {
         TypeDescription = typeDescription;
         this.newMsg = newMsg;
     }
+
+    protected Msgs(Parcel in) {
+        MsgID = in.readInt();
+        MsgDescription = in.readString();
+        TypeDescription = in.readInt();
+        newMsg = in.readInt();
+        origPos = in.readInt();
+        isFav = in.readInt();
+        orderFav = in.readInt();
+    }
+
+    public static final Creator<Msgs> CREATOR = new Creator<Msgs>() {
+        @Override
+        public Msgs createFromParcel(Parcel in) {
+            return new Msgs(in);
+        }
+
+        @Override
+        public Msgs[] newArray(int size) {
+            return new Msgs[size];
+        }
+    };
 
     public int getMsgID() {
         return MsgID;
@@ -128,6 +148,12 @@ public class Msgs implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeInt(MsgID);
+        dest.writeString(MsgDescription);
+        dest.writeInt(TypeDescription);
+        dest.writeInt(newMsg);
+        dest.writeInt(origPos);
+        dest.writeInt(isFav);
+        dest.writeInt(orderFav);
     }
 }

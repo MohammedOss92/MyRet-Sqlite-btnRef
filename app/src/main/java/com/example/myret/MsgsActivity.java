@@ -1,15 +1,16 @@
 package com.example.myret;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+
+import android.util.Log;
+import android.view.Menu;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
 
 import com.example.myret.Adapter.MsgsAdap;
 import com.example.myret.Modal.Msgs;

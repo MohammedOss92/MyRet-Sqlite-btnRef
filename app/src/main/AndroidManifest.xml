@@ -13,8 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".FavActivity" />
         <activity android:name=".MsgsActivity" />
-
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,8 +23,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".ScreenSlidePagerActivity"/>
+        <activity android:name=".Pager_Messages"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".Pager"
-            />
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
