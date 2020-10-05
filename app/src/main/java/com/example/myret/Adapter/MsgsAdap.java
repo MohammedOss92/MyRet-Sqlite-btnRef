@@ -61,7 +61,7 @@ public class MsgsAdap extends RecyclerView.Adapter<MsgsAdap.ViewHolder> {
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context, ScreenSlidePagerActivity.class);
+                Intent i = new Intent(context, Pager_Messages.class);
 
                 final Msgs msgs=msgsList.get(position);
                 i.putExtra("titleID", msgs.getTypeDescription());

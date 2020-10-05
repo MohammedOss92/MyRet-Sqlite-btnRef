@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myret.Modal.Msgs;
+import com.example.myret.Pager_Messages;
 import com.example.myret.R;
 import com.example.myret.Sqlite.Sqlite;
 
@@ -39,9 +40,12 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Sqlite sqlite = new Sqlite(context);
         Msgs msgs = msgsList.get(position);
         holder.txt_msg.setText(msgs.getMsgDescription());
-        holder.txt_new.setText(""+msgs.getNewMsg());
+        int titleId = msgs.getTypeDescription();
+        String titleDesc = sqlite.getMsgTitleByTitleID(titleId);
+        holder.txt_title.setText(titleDesc);
 
         holder.txt_msg.setTextColor(context.getResources().getColor(R.color.colorBlue));
         if ((position% 2) == 0) {
@@ -51,9 +55,26 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
             holder.txt_msg.setTextColor(context.getResources().getColor(R.color.colorRed));
         }
 
-        Sqlite d = new Sqlite(context);
-        if (d.getIFMsgIsFav(msgs) == 0) {
-            holder.img_fav.setImageResource(R.mipmap.nf);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, Pager_Messages.class);
+
+                final Msgs msgs=msgsList.get(position);
+                i.putExtra("titleID", msgs.getTypeDescription());
+                i.putExtra("pos",position);
+                i.putExtra("msgID",msgs.getMsgID());
+                i.putExtra("origPos",msgs.getOrigPos());
+                i.putExtra("newMsg",msgs.getNewMsg());
+                i.putExtra("sourceIsFav",true);
+                context.startActivity(i);
+            }
+        });
+
+
+
+        if (sqlite.getIFMsgIsFav(msgs) == 0) {
+            holder.img_fav.setImageResource(R.drawable.nf);
 
         } else {
             holder.img_fav.setImageResource(R.drawable.f);
@@ -62,30 +83,26 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
         holder.img_fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (d.getIFMsgIsFav(msgs) == 0) {
+                if (sqlite.getIFMsgIsFav(msgs) == 0) {
                     holder.img_fav.setImageResource(R.drawable.f);
-                    d.changeFav(msgs, 1);
+                    sqlite.changeFav(msgs, 1);
                     Toast.makeText(context, "تم الإضافة إلى المفضلة", Toast.LENGTH_LONG).show();
                     notifyDataSetChanged();
                 } else {
-
-                    holder.img_fav.setImageResource(R.mipmap.nf);
-                    d.changeFav(msgs, 0);
+                    holder.img_fav.setImageResource(R.drawable.nf);
+                    sqlite.changeFav(msgs, 0);
                     Toast.makeText(context, "تم الإزالة من المفضلة", Toast.LENGTH_LONG).show();
-                    msgsList.remove(position);
                     notifyDataSetChanged();
                 }
-
             }
         });
 
-        holder.cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (msgs.getNewMsg() == 0) {
+            holder.img_new.setVisibility(View.INVISIBLE);
 
-            }
-        });
+        } else {
+            holder.img_new.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -94,16 +111,17 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txt_msg ,txt_new;
+        TextView txt_msg ,txt_title;
         CardView cardView;
-        ImageView img_fav;
+        ImageView img_fav,img_new;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_msg=itemView.findViewById(R.id.tvMsgada);
-            txt_new=itemView.findViewById(R.id.newMsg);
+            txt_title=itemView.findViewById(R.id.tvTitleada);
             cardView=itemView.findViewById(R.id.card_msgs);
             img_fav=itemView.findViewById(R.id.favada);
+            img_new=itemView.findViewById(R.id.new_Msg);
         }
     }
 }

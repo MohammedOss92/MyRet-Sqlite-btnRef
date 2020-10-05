@@ -74,8 +74,12 @@ public class Pager_Messages extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        mViewPager.setCurrentItem(pos);
-
+//        mViewPager.setCurrentItem(pos);
+        if(sourceISFav)
+        //because order of fav start from index difference while normal messages start from ok index
+        {mViewPager.setCurrentItem(pos);}
+        else
+        {mViewPager.setCurrentItem(origPOS);}
 
 
 
