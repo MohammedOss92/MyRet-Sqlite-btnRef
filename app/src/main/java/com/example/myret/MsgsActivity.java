@@ -6,8 +6,11 @@ import android.os.Bundle;
 
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +29,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MsgsActivity extends AppCompatActivity {
+public class MsgsActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private static final String TAG = "MsgsActivity";
     RecyclerView recyclerView;
@@ -76,10 +79,18 @@ public class MsgsActivity extends AppCompatActivity {
 
     public boolean onCreateOptionMenu(Menu menu){
         getMenuInflater().inflate(R.menu.menu_msg,menu);
+        MenuItem search = menu.findItem(R.id.ic_action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(search);
+        searchView.setOnQueryTextListener(this);
         return true;
     }
 
-    public void getAllMsgs() {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void getAllMsgs(int TypeDescription,final boolean goToMessages) {
         Call<MsgsResponse> call = ApiClientMsg.getInstance().getApiInterface().getAllMsgs(TypeDescription);
 
         call.enqueue(new Callback<MsgsResponse>() {
@@ -87,17 +98,25 @@ public class MsgsActivity extends AppCompatActivity {
             public void onResponse(Call<MsgsResponse> call, Response<MsgsResponse> response) {
 
                 msgsList = response.body().getMsgs();
-                msgsAdap = new MsgsAdap(MsgsActivity.this, msgsList);
-                recyclerView.setAdapter(msgsAdap);
-                msgsAdap.notifyDataSetChanged();
+//                msgsAdap = new MsgsAdap(MsgsActivity.this, msgsList);
+//                recyclerView.setAdapter(msgsAdap);
+//                msgsAdap.notifyDataSetChanged();
+
+
                 try {
 //                    sqlite.ClearMsgs();
+//                    sqlite.updateFavOnRefersh();
                     for(int i=0 ;i<msgsList.size();i++){
                 sqlite.saveMessages(msgsList.get(i));
             }
         }catch (Exception e){
 
         }
+                Sqlite s = new Sqlite(MsgsActivity.this);
+//                s.updateFavOnRefersh();
+                if (goToMessages) {
+                    fillData();
+                }
 
 //                MsgsResponse msgsResponse = response.body();
 //                List<Msgs> msgs = msgsResponse.getMsgs();
@@ -125,5 +144,24 @@ public class MsgsActivity extends AppCompatActivity {
         MsgsAdap msgsAdap = new MsgsAdap(MsgsActivity.this,mymsgList);
         recyclerView.setAdapter(msgsAdap);
         msgsAdap.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        newText = newText.toLowerCase();
+        List<Msgs>newList = new ArrayList<>();
+        for(Msgs msgs :msgsList){
+            String msgDescription = msgs.getMsgDescription().toLowerCase();
+            if(msgDescription.contains(newText)){
+                newList.add(msgs);
+            }
+        }
+        msgsAdap.setFilter(newList);
+        return true;
     }
 }

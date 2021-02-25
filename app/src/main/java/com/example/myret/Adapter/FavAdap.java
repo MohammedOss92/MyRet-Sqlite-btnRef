@@ -3,15 +3,19 @@ package com.example.myret.Adapter;
 import android.content.Context;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +26,8 @@ import com.example.myret.Sqlite.Sqlite;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
     private Context context;
@@ -48,11 +54,13 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
         holder.txt_title.setText(titleDesc);
 
         holder.txt_msg.setTextColor(context.getResources().getColor(R.color.colorBlue));
+        holder.txt_title.setTextColor(context.getResources().getColor(R.color.colorRed));
         if ((position% 2) == 0) {
             // number is even
         } else {
             // number is odd
             holder.txt_msg.setTextColor(context.getResources().getColor(R.color.colorRed));
+            holder.txt_title.setTextColor(context.getResources().getColor(R.color.colorBlue));
         }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -87,13 +95,13 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
                     holder.img_fav.setImageResource(R.drawable.f);
                     sqlite.changeFav(msgs, 1);
                     Toast.makeText(context, "تم الإضافة إلى المفضلة", Toast.LENGTH_LONG).show();
-                    msgsList.remove(position);
+//                    msgsList.remove(position);
                     notifyDataSetChanged();
                 } else {
                     holder.img_fav.setImageResource(R.drawable.nf);
                     sqlite.changeFav(msgs, 0);
                     Toast.makeText(context, "تم الإزالة من المفضلة", Toast.LENGTH_LONG).show();
-                    msgsList.remove(position);
+//                    msgsList.remove(position);
                     notifyDataSetChanged();
                 }
             }
@@ -112,10 +120,11 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
         return msgsList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
         TextView txt_msg ,txt_title;
         CardView cardView;
         ImageView img_fav,img_new;
+        ImageButton img_button;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -124,6 +133,34 @@ public class FavAdap extends RecyclerView.Adapter<FavAdap.ViewHolder> {
             cardView=itemView.findViewById(R.id.card_msgs);
             img_fav=itemView.findViewById(R.id.favada);
             img_new=itemView.findViewById(R.id.new_Msg);
+            img_button=itemView.findViewById(R.id.imageButton);
+
+            img_button.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            showPopupMenu(v);
+        }
+
+        private void showPopupMenu(View view) {
+            PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+            popupMenu.inflate(R.menu.popup_menu);
+            popupMenu.setOnMenuItemClickListener(this);
+            popupMenu.show();
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+
+            switch (item.getItemId()){
+                case R.id.action_popup_copy:
+                    Log.d(TAG, "onMenuItemClickFav: ");
+                    return true;
+
+                default:
+                    return false;
+            }
         }
     }
 }

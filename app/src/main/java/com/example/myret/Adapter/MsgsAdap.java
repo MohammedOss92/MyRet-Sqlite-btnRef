@@ -3,15 +3,19 @@ package com.example.myret.Adapter;
 import android.content.Context;
 import android.content.Intent;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +28,8 @@ import com.example.myret.Sqlite.Sqlite;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class MsgsAdap extends RecyclerView.Adapter<MsgsAdap.ViewHolder> {
     private Context context;
@@ -51,11 +57,13 @@ public class MsgsAdap extends RecyclerView.Adapter<MsgsAdap.ViewHolder> {
         holder.txt_title.setText(titleDesc);
 
         holder.txt_msg.setTextColor(context.getResources().getColor(R.color.colorBlue));
+        holder.txt_title.setTextColor(context.getResources().getColor(R.color.colorRed));
         if ((position% 2) == 0) {
             // number is even
         } else {
             // number is odd
             holder.txt_msg.setTextColor(context.getResources().getColor(R.color.colorRed));
+            holder.txt_title.setTextColor(context.getResources().getColor(R.color.colorBlue));
         }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
@@ -113,15 +121,22 @@ public class MsgsAdap extends RecyclerView.Adapter<MsgsAdap.ViewHolder> {
         this.msgsList = msgsList;
     }
 
+    public void setFilter(List<Msgs>newList){
+        msgsList=new ArrayList<>();
+        msgsList.addAll(newList);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return msgsList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
         TextView txt_msg ,txt_title;
         CardView cardView;
         ImageView img_fav,img_new;
+        ImageButton img_button;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_msg=itemView.findViewById(R.id.tvMsgada);
@@ -129,6 +144,34 @@ public class MsgsAdap extends RecyclerView.Adapter<MsgsAdap.ViewHolder> {
             cardView=itemView.findViewById(R.id.card_msgs);
             img_fav=itemView.findViewById(R.id.favada);
             img_new=itemView.findViewById(R.id.new_Msg);
+            img_button=itemView.findViewById(R.id.imageButton);
+
+            img_button.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            showPopupMenu(v);
+        }
+
+        private void showPopupMenu(View view) {
+            PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+            popupMenu.inflate(R.menu.popup_menu);
+            popupMenu.setOnMenuItemClickListener(this);
+            popupMenu.show();
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+
+            switch (item.getItemId()){
+                case R.id.action_popup_copy:
+                    Log.d(TAG, "onMenuItemClick: ");
+                    return true;
+
+                default:
+                    return false;
+            }
         }
     }
 }

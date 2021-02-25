@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Sqlite sqlite;
     int counter;
     int TypeDescription;
-    Button btn;
+    Button btn_fav,btn_ref;
 
 
     @Override
@@ -50,18 +50,27 @@ public class MainActivity extends AppCompatActivity {
         sqlite = new Sqlite(this);
 
         recyclerView = findViewById(R.id.recyclerview);
-        btn = findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
+        btn_fav = findViewById(R.id.button);
+        btn_ref = findViewById(R.id.button2);
+        btn_fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,FavActivity.class);
                 startActivity(i);
             }
         });
+        btn_ref.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getAllMsgTypes(true);
+            }
+        });
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         msgTypesAdapter = new MsgTypesAdapter(MainActivity.this, msgTypeList);
-        getAllMsgTypes();
+
         //getAllMsgs(TypeDescription);
         fillData();
 
@@ -78,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void getAllMsgTypes() {
+    private void getAllMsgTypes(final boolean isRefresh) {
         Call<MsgTypesResponse>call = ApiClient.getInstance().getApiInterface().getAllMsgTypes();
 
         call.enqueue(new Callback<MsgTypesResponse>() {
@@ -87,23 +96,34 @@ public class MainActivity extends AppCompatActivity {
 
                 msgTypeList = response.body().getMsgTypes();
 
-                msgTypesAdapter = new MsgTypesAdapter(MainActivity.this, msgTypeList);
-                recyclerView.setAdapter(msgTypesAdapter);
-                msgTypesAdapter.notifyDataSetChanged();
-                try {
-                    sqlite.ClearMsgs();
-                    sqlite.clearTables();
+
+//                msgTypesAdapter = new MsgTypesAdapter(MainActivity.this, msgTypeList);
+//                recyclerView.setAdapter(msgTypesAdapter);
+//                msgTypesAdapter.notifyDataSetChanged();
+
+//                    sqlite.ClearMsgs();
+//                    sqlite.clearTables();
+                    if(isRefresh) {
+                        Sqlite s = new Sqlite(MainActivity.this);
+                        s.clearTables();
+                        s.ClearMsgs();
+                    }
+                    sqlite.updateFavOnRefersh();
                     for (int i = 0; i < msgTypeList.size(); i++) {
+                        try {
                         sqlite.saveMsgTypes(msgTypeList.get(i));
 
                         // TODO: 27/09/2020 save second page data in sqlite
+                        MsgsActivity msgsActivity = new MsgsActivity();
                         getAllMsgs( msgTypeList.get(i).getTypeID());
+//                        msgsActivity.getAllMsgs(msgTypeList.get(i).getTypeID(),false);
+                        }
+                        catch (Exception e){
 
+                        }
                     }
-                }
-                catch (Exception e){
+                    fillData();
 
-                }
             }
 
             @Override
@@ -126,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: 27/09/2020 save in sqlite
 
                 //sqlite.ClearMsgs();
+                sqlite.updateFavOnRefersh();
                 for(int i=0 ;i<msgsList.size();i++){
                     sqlite.saveMessages(msgsList.get(i));
 
@@ -161,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
         MsgTypesAdapter a=new MsgTypesAdapter(this,myArrayList);
         recyclerView.setAdapter(a);
     }
-
 
 
 

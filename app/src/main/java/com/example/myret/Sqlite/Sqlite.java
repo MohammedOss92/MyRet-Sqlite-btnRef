@@ -17,7 +17,7 @@ import java.util.List;
 public class Sqlite extends SQLiteOpenHelper {
 
     public Sqlite(Context context) {
-        super(context, "aseda", null, 1);
+        super(context, "asas", null, 3);
     }
 
     public Sqlite(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -27,10 +27,10 @@ public class Sqlite extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String a = "Create Table MessageTypes (TypeID integer   primary key, TypeDescription text ,newMsg integer  )";
+        String a = "Create Table MessageTypes (TypeID integer   primary key AutoINCREMENT unique, TypeDescription text ,newMsg integer  )";
         db.execSQL(a);
 
-        String b = "Create Table Messages     (MsgID  integer   primary key,MsgDescription text,TypeDescription integer,origPos integer ,newMsg int,fav int,orderOfFav int)";
+        String b = "Create Table Messages     (MsgID  integer   primary key AutoIncrement unique,MsgDescription text,TypeDescription integer,origPos integer ,newMsg int,fav int,orderOfFav int)";
         db.execSQL(b);
 
         String c = "Create table Favs(MsgID integer)";
@@ -160,13 +160,13 @@ public class Sqlite extends SQLiteOpenHelper {
         db.close();
     }
 
-//    public void updateFavOnRefersh() {
-//        SQLiteDatabase db = getWritableDatabase();
-//        String sql = "update messages set fav=1 where msgid in(select msgid from favs)";
-//        db.execSQL(sql);
-//
-//    }
-//
+    public void updateFavOnRefersh() {
+        SQLiteDatabase db = getWritableDatabase();
+        String sql = "update messages set fav=1 where msgID in(select msgID from favs)";
+        db.execSQL(sql);
+
+    }
+
     public int getIFMsgIsFav(Msgs m) {
         int result = 0;
         SQLiteDatabase db = getWritableDatabase();
